@@ -1,0 +1,14 @@
+{
+    "require": {
+        "cakephp/orm": "^3.8",
+        "nezamy/route": "^1.2",
+        "cakephp/i18n": "^3.6",
+        "gregwar/formidable": "^2.1",
+        "google/recaptcha": "^1.2"
+    },
+    "autoload": {
+      "psr-4": {
+        "SolusiPress\\": "includes/"
+      }
+    }
+}

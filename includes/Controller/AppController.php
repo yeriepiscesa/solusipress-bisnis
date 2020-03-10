@@ -24,7 +24,7 @@ class AppController {
 	
 	protected function checkAuth() {	
 		$auth = false;
-		if( is_user_logged_in() && current_user_can( 'manage_options' ) ) {
+		if( is_user_logged_in() && current_user_can( 'manage_solusipress_bisnis' ) ) {
 			$auth = true;
 		} else {
 			if( defined('JWT_AUTH_SECRET_KEY') && class_exists( 'Firebase\JWT\JWT' ) ) {
@@ -36,7 +36,7 @@ class AppController {
 				        	$payload = \Firebase\JWT\JWT::decode( $token, JWT_AUTH_SECRET_KEY, ['HS256'] );
 				        	if( $payload ) {
 					        	$u = new \WP_User( $payload->data->user->id );
-					        	if( isset( $u->allcaps[ 'manage_options' ] ) && $u->allcaps['manage_options'] === true ) {
+					        	if( isset( $u->allcaps[ 'manage_solusipress_bisnis' ] ) && $u->allcaps['manage_solusipress_bisnis'] === true ) {
 					        		$auth = true;
 					        	}
 				        	}

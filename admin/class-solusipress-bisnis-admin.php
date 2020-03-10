@@ -143,24 +143,24 @@ class Solusipress_Bisnis_Admin {
 		
         add_menu_page( 
             'SolusiPress Bisnis', 'Bisnis', 
-            'manage_options', 
+            'manage_solusipress_bisnis', 
             'solusipress', array( $this, 'solusipress_home' ), 
             'dashicons-chart-bar', 3 );
-		add_submenu_page( 'solusipress', 'Kas / Bank', 'Kas / Bank', 'manage_options', 'solusipress', array( $this, 'bank' ) );           
-		add_submenu_page( 'solusipress', 'Kas Masuk/Keluar', 'Kas Masuk/Keluar', 'manage_options', 'cashflow', array( $this, 'cashflow' ) );           
-		add_submenu_page( 'solusipress', 'Transaksi Hutang', 'Hutang', 'manage_options', 'debts_dr', array( $this, 'debts_dr' ) );           
-		add_submenu_page( 'solusipress', 'Transaksi Piutang', 'Piutang', 'manage_options', 'debts_cr', array( $this, 'debts_cr' ) );           
+		add_submenu_page( 'solusipress', 'Kas / Bank', 'Kas / Bank', 'manage_solusipress_bisnis', 'solusipress', array( $this, 'bank' ) );           
+		add_submenu_page( 'solusipress', 'Kas Masuk/Keluar', 'Kas Masuk/Keluar', 'manage_solusipress_bisnis', 'cashflow', array( $this, 'cashflow' ) );           
+		add_submenu_page( 'solusipress', 'Transaksi Hutang', 'Hutang', 'manage_solusipress_bisnis', 'debts_dr', array( $this, 'debts_dr' ) );           
+		add_submenu_page( 'solusipress', 'Transaksi Piutang', 'Piutang', 'manage_solusipress_bisnis', 'debts_cr', array( $this, 'debts_cr' ) );           
 
 		add_menu_page(
 			'Kontak', 'Kontak',
-			'manage_options',
+			'manage_solusipress_bisnis',
 			'sp-kontak', array( $this, 'contact_type' ),
 			'dashicons-groups', 3
 		);
-		add_submenu_page( 'sp-kontak', 'Kategori Kontak', 'Kategori', 'manage_options', 'sp-kontak', array( $this, 'contact_type' ) );
-		add_submenu_page( 'sp-kontak', 'Data Kontak', 'Data Kontak', 'manage_options', 'sp-contact-data', array( $this, 'contact_data' ) );
-		add_submenu_page( 'sp-kontak', 'Pesan', 'Pesan', 'manage_options', 'sp-contact-message', array( $this, 'contact_messages' ) );
-		add_submenu_page( 'sp-kontak', 'Pengaturan Kontak', 'Pengaturan', 'manage_options', 'sp-contact-settings', array( $this, 'contact_settings' ) );
+		add_submenu_page( 'sp-kontak', 'Kategori Kontak', 'Kategori', 'manage_solusipress_bisnis', 'sp-kontak', array( $this, 'contact_type' ) );
+		add_submenu_page( 'sp-kontak', 'Data Kontak', 'Data Kontak', 'manage_solusipress_bisnis', 'sp-contact-data', array( $this, 'contact_data' ) );
+		add_submenu_page( 'sp-kontak', 'Pesan', 'Pesan', 'manage_solusipress_bisnis', 'sp-contact-message', array( $this, 'contact_messages' ) );
+		add_submenu_page( 'sp-kontak', 'Pengaturan Kontak', 'Pengaturan', 'manage_solusipress_bisnis', 'sp-contact-settings', array( $this, 'contact_settings' ) );
 	}
 	
 	public function solusipress_home() {

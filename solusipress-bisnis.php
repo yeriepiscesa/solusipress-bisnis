@@ -16,7 +16,7 @@
  * Plugin Name:       SolusiPress Bisnis
  * Plugin URI:        https://solusipress.com/bisnis
  * Description:       This is a short description of what the plugin does. It's displayed in the WordPress admin area.
- * Version:           1.0.0
+ * Version:           0.9.2
  * Author:            Yerie Piscesa
  * Author URI:        https://solusipress.com/
  * License:           GPL-2.0+

@@ -45,6 +45,15 @@ class Solusipress_Bisnis_Activator {
 	    }		
 	    
 	}
+	
+	public static function register_roles() {
+		add_role( 'solusipress_admin_bisnis', 'Admin Bisnis', array( 
+	        'read' => true, 
+	        'manage_solusipress_bisnis' => true
+	    ) );	    
+	    $administrator = get_role( 'administrator' );
+	    $administrator->add_cap( 'manage_solusipress_bisnis' );  		
+	}
 
 	public static function delete_files( $files ) {
 		foreach( $files as $file ){ // iterate files
@@ -88,7 +97,9 @@ class Solusipress_Bisnis_Activator {
 		$files = glob(  $upload_dir  . '/cache/model/*' );        
 		self::delete_files( $files );
 
-        update_option( 'solusipress_database_version', $current_db_version );        
+        update_option( 'solusipress_database_version', $current_db_version );    
+        
+        self::register_roles();    
 		
 	}
     

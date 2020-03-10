@@ -30,7 +30,15 @@ class Solusipress_Bisnis_Deactivator {
 	 * @since    1.0.0
 	 */
 	public static function deactivate() {
-
+		self::remove_roles();
+	}
+	
+	public static function remove_roles() {
+		if( get_role('solusipress_admin_bisnis') ){
+	        remove_role( 'solusipress_admin_bisnis' );
+	    }	
+	    $administrator = get_role( 'administrator' );
+	    $administrator->remove_cap( 'manage_solusipress_bisnis' ); 			
 	}
 
 }

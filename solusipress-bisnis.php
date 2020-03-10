@@ -47,11 +47,6 @@ require __DIR__ . '/vendor/autoload.php';
  */
 define( 'SOLUSIPRESS_BISNIS_VERSION', '0.9.2' );
 
-/*
-site key : 	6LffPNEUAAAAAM1lgDfEB0eyOx58eT46ZU_08Kg8
-secret : 6LffPNEUAAAAAG-lQ7GtxrG2u58DpBvxnfUfcBxN	
-*/
-
 /**
  * The code that runs during plugin activation.
  * This action is documented in includes/class-solusipress-bisnis-activator.php

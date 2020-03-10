@@ -167,13 +167,40 @@ function SolusiPress_DebtPayment_Item( id, data ) {
     }    	
     
     function do_save_payment(evt) {
+	    
 	    evt.preventDefault();
-	    var payments = ko.toJSON( vm.payment().payments );
-	    var to_delete = ko.toJSON( vm.payment().payments_to_delete );
-	    console.log(payments);
-	    console.log(to_delete);
+	    
+	    this.payments = $.parseJSON( ko.toJSON( vm.payment().payments ) );
+	    this.to_delete = $.parseJSON( ko.toJSON( vm.payment().payments_to_delete ) );
+
+        $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( { message: 'Menyimpan data...' } );   
+        $( '.loading-overlay' ).css( 'z-index', 100000000 );
+	    
+	    this.index = 0;
+	    this.send_payment = function(){
+		    var self = this;
+		    self.index++;
+		    if( self.payments[self.index] != undefined ) {
+			    self.send_payment();
+		    } else {
+			    self.done();
+		    }
+	    };
+	    this.done = function(){
+		    $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( 'toggle' );
+            $.jqmodal.close();
+            $( '.container-notifyjs' ).notify( 
+                "Transaksi berhasil dilakukan", {
+                className: 'success',
+                position: 'top right'
+            });                            
+            dt.api().ajax.reload( null );
+	    }
+	    
+	    if( this.payments[this.index] != undefined ) {
+		    this.send_payment();
+	    }
     }
-    
     function prepare_payment_form( the_id ) {
         $( '#solusipress-form-payment' ).jqmodal();
         $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( { message: 'Mengambil data...' } );   

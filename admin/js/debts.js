@@ -53,6 +53,7 @@ function SolusiPress_DebtPayment( id, data ) {
 		the_title = 'Penerimaan Piutang';
 		title = 'Piutang';
 	}
+	self.debt_id = id;
 	self.title = title;
 	self.payment_title = the_title;
 	self.contact = data.contact;
@@ -172,21 +173,63 @@ function SolusiPress_DebtPayment_Item( id, data ) {
 	    
 	    this.payments = $.parseJSON( ko.toJSON( vm.payment().payments ) );
 	    this.to_delete = $.parseJSON( ko.toJSON( vm.payment().payments_to_delete ) );
-
+	    this.debt_id = vm.payment().debt_id;
+		
         $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( { message: 'Menyimpan data...' } );   
         $( '.loading-overlay' ).css( 'z-index', 100000000 );
 	    
 	    this.index = 0;
+	    this.rm_index = 0;
+	    
 	    this.send_payment = function(){
 		    var self = this;
-		    self.index++;
-		    if( self.payments[self.index] != undefined ) {
-			    self.send_payment();
-		    } else {
-			    self.done();
+		    var input = self.payments[self.index];
+		    input.debt_id = self.debt_id;
+
+		    var the_url = solusipress.payment_action;
+		    if( input.id != null ) {
+			    the_url = the_url + input.id;
 		    }
+		    
+		    $.ajax( {
+				method: 'POST',
+				url: the_url,
+				data: input,
+				success: function( resp ) {
+				    self.index++;
+				    if( self.payments[self.index] != undefined ) {
+					    self.send_payment();
+				    } else if( self.to_delete[self.rm_index] != undefined ) {
+				    	self.send_payment_delete();
+				    } else {
+					    self.done();
+				    }
+				}
+			} );
+			
+	    };
+	    this.send_payment_delete = function(){
+			var self = this;
+			if( solusipress.payment_action+self.to_delete[self.rm_index] != undefined ) {
+				$.ajax( {
+					method: 'DELETE',
+					url: solusipress.payment_action+self.to_delete[self.rm_index],
+					success: function( resp ) {
+						self.rm_index++;
+					    if( self.to_delete[self.rm_index] != undefined ) {
+						    self.send_payment_delete();
+					    } else {
+						    self.done();
+					    }
+					}
+				} );
+			} else {
+				self.done();
+			}
 	    };
 	    this.done = function(){
+		    this.index = 0;
+		    this.rm_index = 0;
 		    $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( 'toggle' );
             $.jqmodal.close();
             $( '.container-notifyjs' ).notify( 
@@ -199,7 +242,12 @@ function SolusiPress_DebtPayment_Item( id, data ) {
 	    
 	    if( this.payments[this.index] != undefined ) {
 		    this.send_payment();
+	    } else if( this.to_delete[this.rm_index] != undefined ) {
+		    this.send_payment_delete();
+	    } else {
+		    this.done();
 	    }
+	    
     }
     function prepare_payment_form( the_id ) {
         $( '#solusipress-form-payment' ).jqmodal();

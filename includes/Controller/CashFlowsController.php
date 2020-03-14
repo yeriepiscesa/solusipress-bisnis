@@ -352,9 +352,19 @@ class CashFlowsController extends AppController {
         $entity = $model->patchEntity( $entity, $data );
         $errors = $entity->getErrors();
         if( empty( $errors ) ) {
-            $model->save( $entity );
-            $status = true;
-            $insert_id = $entity->id;
+	        $continue = true;
+	        if( $data['dc'] == 'c' ) {
+	        	$available = \SolusiPress\Model\Transact::creditBalance( $data['account_id'], $data['amount'] );
+	        	if( $available < 0 ) {
+		        	$continue = false;
+		        	$message = 'Saldo tidak cukup, mohon cek jumlah yang akan dikurangi pada kas/bank';
+	        	}
+	        }
+	        if( $continue ) {
+	            $model->save( $entity );
+	            $status = true;
+	            $insert_id = $entity->id;
+	        }
         } else{
             $message = 'Tambah data gagal, mohon ulangi kembali';
         }
@@ -384,8 +394,20 @@ class CashFlowsController extends AppController {
 	        $entity = $model->patchEntity( $entity, $data );
 	        $errors = $entity->getErrors();
 	        if( empty( $errors ) ) {
-	            $model->save( $entity );
-	            $status = true;
+		        $continue = true;
+		        if( $data['dc'] == 'c' ) {
+			        $amount_before = $entity->amount;
+			        $available = \SolusiPress\Model\Transact::creditBalance( $data['account_id'], $data['amount'] );
+			        $balanceAfter = ( $available - $data['amount'] + $amount_before ) - $data['amount'];
+			        if( $balanceAfter < 0 ) {
+				        $continue = false;
+						$message = 'Saldo tidak cukup, mohon cek jumlah yang akan dikurangi pada kas/bank';
+			        }
+		        }
+		        if( $continue ) {
+		            $model->save( $entity );
+		            $status = true;
+	            }
 	        } else {
 	            $message = 'Ubah data gagal, mohon ulangi kembali';
 	        }        

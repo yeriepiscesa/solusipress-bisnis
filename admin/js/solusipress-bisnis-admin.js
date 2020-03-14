@@ -56,7 +56,7 @@ var solusipress_functions = (function($){
 	                        
 	                        var err_container = '.container-notifyjs';
 	                        if( $( '.form-notify-error' ) ) {
-		                        err_container = '#form-notify-error';
+		                        err_container = '.form-notify-error';
 	                        }
 	                        
                             $( err_container ).notify( 

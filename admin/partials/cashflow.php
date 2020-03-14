@@ -86,6 +86,7 @@
 		<form method="post" class="frm-form-fields">
 		    <h3 id="dialogTitle" data-bind="text: form_title"></h3>     
 		    <hr>
+            <div class="form-notify-error"></div>
 		    <input type="hidden" data-bind="value: item().id">
             <div class="row">        
                 <div class="col-lg-6">
@@ -197,7 +198,7 @@
 		<form method="post" class="frm-form-fields" autocomplete="on">
 		    <h3>Transfer</h3>     
 		    <hr>
-            <div id="transfer-notify-error"></div>
+            <div id="transfer-notify-error" class="form-notify-error"></div>
             <div class="row">
                 <div class="col-lg-6">
                     <div class="form-group">

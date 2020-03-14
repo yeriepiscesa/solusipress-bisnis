@@ -6,6 +6,24 @@ use Cake\Database\Expression\QueryExpression;
 
 class Transact {
 	
+	/* check balance deduction */
+	public static function creditBalance( $account_id, $amount=0, $model=null ) {
+		if( is_null( $model ) ) {
+			$model = ModelLoader::get( 'CashFlows' );
+		}	
+		$query = $model->find();
+		$query->where( [ 'account_id' => $account_id ] );
+		$query->select( [
+			'dr' => $query->func()->sum( "case when CashFlows.dc='d' then CashFlows.amount else 0 end" ),
+			'cr' => $query->func()->sum( "case when CashFlows.dc='c' then CashFlows.amount else 0 end" ),
+		] );	
+		$row = $query->first();
+		
+		$balance = 0;
+		if( $row ) { $balance = $row->dr - $row->cr; }
+		return $balance - $amount;
+	}
+	
 	public static function setCashFlow( $post_id=null, $input=[] ) {
 		
 		$defaults = [

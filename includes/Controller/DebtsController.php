@@ -5,6 +5,7 @@ use SolusiPress\Model\Loader as ModelLoader;
 use Cake\Database\Expression\QueryExpression;
 use Cake\ORM\Query;
 use DateTime;
+use Cake\Datasource\Exception\RecordNotFoundException;
 
 class DebtsController extends AppController {
 
@@ -451,17 +452,26 @@ class DebtsController extends AppController {
         $status = false;
         $message = null;
         $model = ModelLoader::get( $this->modelName );
-        $entity = $model->get( $id );
-        if( $model->delete( $entity ) ) {
-            $status = true;
-            $this->delete_cashflow( $id );
-        } else {
-            $message = 'Hapus data gagal, mohon ulangi kembali';
+        
+    	try {
+	        
+	        $entity = $model->get( $id );
+	        if( $model->delete( $entity ) ) {
+	            $status = true;
+	            $this->delete_cashflow( $id );
+	        } else {
+	            $message = 'Hapus data gagal, mohon ulangi kembali';
+	        }
+	        
+        } catch( RecordNotFoundException $notFound ) {
+	        $message = 'Transaksi tidak ditemukan';
         }
+        
         $result = [
             'status' => $status,
             'message' => $message
         ];
+        
         echo json_encode( $result );
 	}
 	
@@ -474,6 +484,22 @@ class DebtsController extends AppController {
 		])->first();
 		
 		if( $cashflow ) {
+			
+			$debtPayment = ModelLoader::get( 'DebtPayments' );
+			$payments = $debtPayment->find()->where([
+				'debt_id' => $id
+			])->all();
+			if( $payments && !empty( $payments ) ) {
+				$to_delete = [];
+				foreach( $payments as $payment ) {
+					array_push( $to_delete, $payment->id );
+				}
+				$model->deleteAll([
+					'object_model' => 'DebtPayments',
+					'object_id IN' => $to_delete
+				]);
+				$debtPayment->deleteAll( [ 'debt_id' => $id ] );
+			}
 			$model->delete( $cashflow );
 		}
 		

@@ -124,6 +124,7 @@ class CashFlowsController extends AppController {
             'CashFlows.trx_date',
             'CashFlows.dc',
             'CashFlows.contact_id',
+            'CashFlows.account_id',
             'CashFlows.from_to_name',
             'CashFlows.amount',
             'CashFlows.note',

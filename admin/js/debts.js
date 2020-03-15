@@ -170,85 +170,39 @@ function SolusiPress_DebtPayment_Item( id, data ) {
     function do_save_payment(evt) {
 	    
 	    evt.preventDefault();
-	    
-	    this.payments = $.parseJSON( ko.toJSON( vm.payment().payments ) );
-	    this.to_delete = $.parseJSON( ko.toJSON( vm.payment().payments_to_delete ) );
-	    this.debt_id = vm.payment().debt_id;
-		
         $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( { message: 'Menyimpan data...' } );   
         $( '.loading-overlay' ).css( 'z-index', 100000000 );
-	    
-	    this.index = 0;
-	    this.rm_index = 0;
-	    
+	    this.inputs = {
+			payments: $.parseJSON( ko.toJSON( vm.payment().payments ) ),
+			to_delete: $.parseJSON( ko.toJSON( vm.payment().payments_to_delete ) )
+	    };
+		this.debt_id = vm.payment().debt_id
 	    this.send_payment = function(){
 		    var self = this;
-		    var input = self.payments[self.index];
-		    input.debt_id = self.debt_id;
-
-		    var the_url = solusipress.payment_action;
-		    if( input.id != null ) {
-			    the_url = the_url + input.id;
-		    }
-		    
-		    $.ajax( {
+			$.ajax( {
 				method: 'POST',
-				url: the_url,
-				data: input,
-				success: function( resp ) {
-				    self.index++;
-				    if( self.payments[self.index] != undefined ) {
-					    self.send_payment();
-				    } else if( self.to_delete[self.rm_index] != undefined ) {
-				    	self.send_payment_delete();
-				    } else {
-					    self.done();
-				    }
+				url: solusipress.payment_action+self.debt_id+'/update-payment/',
+				data: inputs,
+				success: function( response ) {
+                    var json = $.parseJSON( response ); 
+                    if( json.status ) {
+						$( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( 'toggle' );
+			            $.jqmodal.close();
+			            $( '#payment-notifyjs' ).notify( 
+			                "Transaksi berhasil dilakukan", {
+			                className: 'success',
+			                position: 'top right'
+			            });                            
+			            dt.api().ajax.reload( null );					
+			        }
 				}
-			} );
-			
-	    };
-	    this.send_payment_delete = function(){
-			var self = this;
-			if( solusipress.payment_action+self.to_delete[self.rm_index] != undefined ) {
-				$.ajax( {
-					method: 'DELETE',
-					url: solusipress.payment_action+self.to_delete[self.rm_index],
-					success: function( resp ) {
-						self.rm_index++;
-					    if( self.to_delete[self.rm_index] != undefined ) {
-						    self.send_payment_delete();
-					    } else {
-						    self.done();
-					    }
-					}
-				} );
-			} else {
-				self.done();
-			}
-	    };
-	    this.done = function(){
-		    this.index = 0;
-		    this.rm_index = 0;
-		    $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( 'toggle' );
-            $.jqmodal.close();
-            $( '.container-notifyjs' ).notify( 
-                "Transaksi berhasil dilakukan", {
-                className: 'success',
-                position: 'top right'
-            });                            
-            dt.api().ajax.reload( null );
+			} );			    
 	    }
-	    
-	    if( this.payments[this.index] != undefined ) {
-		    this.send_payment();
-	    } else if( this.to_delete[this.rm_index] != undefined ) {
-		    this.send_payment_delete();
-	    } else {
-		    this.done();
-	    }
+		this.send_payment();
 	    
     }
+    
+    var form_payment_calls = 0;
     function prepare_payment_form( the_id ) {
         $( '#solusipress-form-payment' ).jqmodal();
         $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( { message: 'Mengambil data...' } );   
@@ -265,16 +219,15 @@ function SolusiPress_DebtPayment_Item( id, data ) {
 	        }
 	    } );
 	    
-        $( '#solusipress-form-payment' ).find( '.datepicker' ).live( 'click', function(){
-            $(".ui-datepicker").css("z-index", "999999");  
-        } );
-        
-        $ ('#solusipress-form-payment' ).on( 'click', '#solusipress-payment-save', function(evt){
-	        do_save_payment(evt);
-	    } );
-        $ ('#solusipress-form-payment' ).on( 'submit', '#frm-debt-payment', function(evt){
-	        do_save_payment(evt);
-	    } );
+		if( form_payment_calls == 0 ) {	    
+	        $( '#solusipress-form-payment' ).find( '.datepicker' ).live( 'click', function(){
+	            $(".ui-datepicker").css("z-index", "999999");  
+	        } );
+	        $( '#solusipress-form-payment' ).find( '#solusipress-payment-save' ).live( 'click', function(event){
+		        do_save_payment(event);
+	        } );
+	    }
+	    form_payment_calls++;
         
         $.ajax( {
 	        method: 'GET',

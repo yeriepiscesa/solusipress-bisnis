@@ -27,6 +27,8 @@ class DebtTrx {
 			];
 			if( $total_paid >= $debt->amount ) {
 				$data['fullpaid_date'] = $last_paid;				
+			} else {
+				$data['fullpaid_date'] = null;
 			}
 			$debt = $Debt->patchEntity( $debt, $data );
 			$Debt->save( $debt );

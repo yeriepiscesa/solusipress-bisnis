@@ -5,6 +5,9 @@ namespace SolusiPress\Controller;
 class AppController {
 	
 	public $name = null;
+    protected $data = null;
+    protected $http_call = true;
+    
 	public function __construct() {
 	}
 	

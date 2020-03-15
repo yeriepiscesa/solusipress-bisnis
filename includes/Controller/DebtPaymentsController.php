@@ -113,13 +113,13 @@ class DebtPaymentsController extends AppController {
         
 	}
 	    
-	public function get_action( $id ) {
-		
-	}
-	
 	public function insert_action() {
 		
-        $data = $this->set_data();        
+		if( is_null( $this->data ) ) {
+        	$data = $this->set_data();    
+        } else {
+	        $data = $this->data;
+        }    
         $data['first_created'] = current_time( 'mysql' );
 		if( !isset( $data['instll_no'] ) ) {
 			$data['instll_no'] = 1;
@@ -127,63 +127,124 @@ class DebtPaymentsController extends AppController {
         
         $status = false;
         $message = null;
-        $insert_id = null;        
-        $model = ModelLoader::get( $this->modelName );
-        $entity = $model->newEntity();
-        $entity = $model->patchEntity( $entity, $data );
-        $errors = $entity->getErrors();
-        if( empty( $errors ) ) {
-            
-            $model->save( $entity );
-            $status = true;
-            $insert_id = $entity->id;
-			\SolusiPress\Model\DebtTrx::updatePaidBalance( $data['debt_id'] );            
-			\SolusiPress\Model\DebtTrx::updateCashFlow( $insert_id );
-			
-        } else {
-	        $str_errors = '';
-	        if( $str_errors == '' ) {
-		        $str_errors = 'periksa kembali isian Anda';
+        $insert_id = null;   
+        
+        $continue = true;
+        if( !isset( $data['debt_dc'] ) ) {
+	        $debt = $this->get_debt( $data['debt_id'] );
+	        if( $debt ) {
+		        $data['debt_dc'] = $debt->dc;
+	        } else {
+		        $continue = false;
+		        $message = 'Referensi hutang/piutang tidak ditemukan';
 	        }
-            $message = 'Tambah data gagal,' . $str_errors;
+        }
+         
+        if( $continue ) {    
+	         
+	        $model = ModelLoader::get( $this->modelName );
+	        $entity = $model->newEntity();
+	        $entity = $model->patchEntity( $entity, $data );
+	        $errors = $entity->getErrors();
+	        if( empty( $errors ) ) {
+		        if( $data['debt_dc'] == 'd' ) {
+		            $available = \SolusiPress\Model\Transact::creditBalance( $data['account_id'], $data['amount'] );
+		        	if( $available < 0 ) {
+			        	$continue = false;
+			        	$message = 'Saldo tidak cukup, mohon cek jumlah yang akan dikurangi pada kas/bank';
+		        	}
+	            }
+	            if( $continue ) {
+		            $model->save( $entity );
+		            $status = true;
+		            $insert_id = $entity->id;
+					\SolusiPress\Model\DebtTrx::updatePaidBalance( $data['debt_id'] );            
+					\SolusiPress\Model\DebtTrx::updateCashFlow( $insert_id );
+				}
+	        } else {
+		        $str_errors = '';
+		        if( $str_errors == '' ) {
+			        $str_errors = 'periksa kembali isian Anda';
+		        }
+	            $message = 'Tambah data gagal,' . $str_errors;
+	        }
+	        
         }
         $result = [
             'status' => $status,
             'message' => $message, 
             'insert_id' => $insert_id
         ];        
+        
+        if( !is_null( $this->data ) ) {
+	        return $result;
+        }
         echo json_encode( $result );
 		         		
 	}
 	
 	public function update_action( $id ) {
-        $data = $this->set_data();        
+		if( is_null( $this->data ) ) {
+        	$data = $this->set_data();    
+        } else {
+	        $data = $this->data;
+        }    
         $data['last_updated'] = current_time( 'mysql' );
 		if( !isset( $data['instll_no'] ) ) {
 			$data['instll_no'] = 1;
 		}		
         $status = false;
         $message = null;
-        $model = ModelLoader::get( $this->modelName );
-        $entity = $model->get( $id );
-        $entity = $model->patchEntity( $entity, $data );
-        $errors = $entity->getErrors();
-        if( empty( $errors ) ) {
-            $model->save( $entity );
-            $status = true;
-			\SolusiPress\Model\DebtTrx::updatePaidBalance( $data['debt_id'] );            
-			\SolusiPress\Model\DebtTrx::updateCashFlow( $id );
-        } else {
-	        $str_errors = '';
-	        if( $str_errors == '' ) {
-		        $str_errors = 'periksa kembali isian Anda';
+        $continue = true;
+        if( !isset( $data['debt_dc'] ) ) {
+	        $debt = $this->get_debt( $data['debt_id'] );
+	        if( $debt ) {
+		        $data['debt_dc'] = $debt->dc;
+	        } else {
+		        $continue = false;
+		        $message = 'Referensi hutang/piutang tidak ditemukan';
 	        }
-            $message = 'Tambah data gagal,' . $str_errors;
         }
+        
+        if( $continue ) {
+	        $model = ModelLoader::get( $this->modelName );
+	        $entity = $model->get( $id );
+	        $entity = $model->patchEntity( $entity, $data );
+	        $errors = $entity->getErrors();
+	        if( empty( $errors ) ) {
+		        if( $data['debt_dc'] == 'd' ) {
+			        $amount_before = $entity->amount;
+	            	$available = \SolusiPress\Model\Transact::creditBalance( $data['account_id'], $data['amount'] );
+			        $balanceAfter = ( $available - $data['amount'] + $amount_before ) - $data['amount'];
+			        if( $balanceAfter < 0 ) {
+				        $continue = false;
+						$message = 'Saldo tidak cukup, mohon cek jumlah yang akan dikurangi pada kas/bank';
+			        }
+	            }
+				if( $continue ) {					        
+		            $model->save( $entity );
+		            $status = true;
+					\SolusiPress\Model\DebtTrx::updatePaidBalance( $data['debt_id'] );            
+					\SolusiPress\Model\DebtTrx::updateCashFlow( $id );
+				}	
+	        } else {
+		        $str_errors = '';
+		        if( $str_errors == '' ) {
+			        $str_errors = 'periksa kembali isian Anda';
+		        }
+	            $message = 'Tambah data gagal,' . $str_errors;
+	        }
+	    }
+	        
         $result = [
             'status' => $status,
             'message' => $message
         ];        
+        
+        if( !is_null( $this->data ) ) {
+	        return $result;
+        }
+        
         echo json_encode( $result );
 	}
 
@@ -206,7 +267,64 @@ class DebtPaymentsController extends AppController {
             'status' => $status,
             'message' => $message
         ];        
+        if( !$this->http_call ) {
+	        return $result;
+        }
         echo json_encode( $result );
+	}
+	
+	private function get_debt( $id=null ) {
+		$debt = ModelLoader::get( 'Debts' )->find()->where( ['id'=>$id] )->first();
+		return $debt;
+	}
+	
+	public function process_action( $debt_id, $process ) {
+		
+		$status = false;
+		$message = 'Tidak ada proses yang dijalankan';
+		
+		if( $process == 'update-payment' ) {
+			$data = app('request')->body;
+			if( isset( $data['payments'] ) ) {
+				$debt = $this->get_debt( $debt_id );
+				if( $debt ) {
+					$message = '';
+					foreach( $data['payments'] as $payment ) {
+						$this->data = $payment;
+						$this->data['debt_id'] = $debt_id;
+						$this->data['debt_dc'] = $debt->dc;
+						if( $payment['id'] == null ) {
+							$_result = $this->insert_action();
+						} else {
+							$_result = $this->update_action( $payment['id'] );
+						}	
+						if( !$_result['status'] ) {
+							if( $message != '' ) {
+								$message .= "\n";
+							}
+						}
+					}									
+					$this->data = null;
+					$status = true;
+				} else {
+					$message = 'Referensi hutang/piutang tidak ditemukan';
+				}
+			}
+			if( isset( $data['to_delete'] ) ) {
+				$this->http_call = false;
+				foreach( $data['to_delete'] as $paymentID ) {
+					$this->delete_action( $paymentID );
+				}		
+				$this->http_call = true;
+			}
+		}
+		
+        $result = [
+            'status' => $status,
+            'message' => $message
+        ];        
+        echo json_encode( $result );
+		
 	}
 	
 }

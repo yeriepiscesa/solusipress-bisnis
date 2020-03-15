@@ -62,6 +62,7 @@
     </div>
         
     <div class="container-notifyjs" style="top: 30px; right: 0px;"></div>        
+    <div id="payment-notifyjs" style="top: 30px; right: 0px;"></div>        
 
     <table id="debts-table" class="table table-striped table-hover">
         <thead>

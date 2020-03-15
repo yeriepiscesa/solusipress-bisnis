@@ -69,9 +69,9 @@
             <tr>
                 <th>&nbsp;</th>
                 <th>Tanggal</th>
-                <th><?php echo $contact_heading ?></th>
+                <th style="width:150px"><?php echo $contact_heading ?></th>
                 <th>Nominal</th>
-                <th>Rekening / Kas</th>
+                <th style="width:250px">Rekening / Kas</th>
                 <th>Jatuh Tempo</th>
                 <th>Total Bayar</th>
             </tr>

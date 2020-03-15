@@ -69,11 +69,11 @@
         <thead>
             <tr>
                 <th>&nbsp;</th>
-                <th>No Transaksi/Nota</th>
+                <th style="min-width:100px;">No Transaksi/Nota</th>
                 <th>Tanggal Nota</th>
-                <th><div>Diterima dari (D)</div><div style="border-top:1px solid #000">Diberikan kepada (C)</div></th>
+                <th style="min-width:150px;"><div>Diterima dari (D)</div><div style="border-top:1px solid #000">Diberikan kepada (C)</div></th>
                 <th>D/C</th>
-                <th>Rekening / Kas</th>
+                <th style="min-width:250px;">Rekening / Kas</th>
                 <th>Nominal</th>
             </tr>
         </thead>

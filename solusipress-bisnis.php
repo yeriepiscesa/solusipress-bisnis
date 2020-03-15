@@ -16,7 +16,7 @@
  * Plugin Name:       SolusiPress Bisnis
  * Plugin URI:        https://solusipress.com/bisnis
  * Description:       Plugin untuk mengelola kontak dan arus kas.
- * Version:           0.10.2
+ * Version:           0.10.4
  * Author:            Yerie Piscesa
  * Author URI:        https://solusipress.com/
  * License:           GPL-2.0+

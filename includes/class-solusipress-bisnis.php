@@ -258,7 +258,7 @@ class Solusipress_Bisnis {
 		$plugin_public = new Solusipress_Bisnis_Public( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts', 30 );
 		
 		$this->loader->add_action( 'template_redirect', $plugin_public, 'redirect_after_submit_contact' );
 		add_shortcode( 'solusipress_bisnis_contact_form', array( $plugin_public, 'contact_form' ) );

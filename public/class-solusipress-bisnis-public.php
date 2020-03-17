@@ -99,7 +99,9 @@ class Solusipress_Bisnis_Public {
 		 */
 
 		wp_register_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/solusipress-bisnis-public.js', array( 'jquery' ), $this->version, false );
-        wp_register_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js?hl=id' );
+        if( ! wp_script_is( 'google-recaptcha', 'registered' ) ) {
+            wp_register_script( 'google-recaptcha', 'https://www.google.com/recaptcha/api.js?hl=id' );
+        }
 
 	}
 	

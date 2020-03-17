@@ -16,7 +16,7 @@
  * Plugin Name:       SolusiPress Bisnis
  * Plugin URI:        https://solusipress.com/bisnis
  * Description:       Plugin untuk mengelola kontak dan arus kas.
- * Version:           0.10.4
+ * Version:           0.10.5
  * Author:            Yerie Piscesa
  * Author URI:        https://solusipress.com/
  * License:           GPL-2.0+
@@ -45,7 +45,7 @@ require __DIR__ . '/vendor/autoload.php';
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'SOLUSIPRESS_BISNIS_VERSION', '0.10.4' );
+define( 'SOLUSIPRESS_BISNIS_VERSION', '0.10.5' );
 
 /**
  * The code that runs during plugin activation.

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "71f9a681e0a1299fca57d1efeb5d31ce",
+    "content-hash": "1dd873cff8b4868d8cf257a17c4dc06c",
     "packages": [
         {
             "name": "aura/intl",
@@ -1150,6 +1150,44 @@
                 "reflection"
             ],
             "time": "2018-11-11T11:18:13+00:00"
+        },
+        {
+            "name": "thamaraiselvam/mysql-import",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/thamaraiselvam/mysql-import.git",
+                "reference": "a69f1c36d9bc3dd751235b1f0f193c749c8aa7fb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/thamaraiselvam/mysql-import/zipball/a69f1c36d9bc3dd751235b1f0f193c749c8aa7fb",
+                "reference": "a69f1c36d9bc3dd751235b1f0f193c749c8aa7fb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Thamaraiselvam\\MysqlImport\\": "/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "thamaraiselvam",
+                    "email": "thamaraiselvam@live.com",
+                    "homepage": "https://thamaraiselvam.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Import .sql file into a database using mysqli",
+            "time": "2018-08-03T09:45:59+00:00"
         }
     ],
     "packages-dev": [],

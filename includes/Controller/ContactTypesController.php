@@ -88,7 +88,7 @@ class ContactTypesController extends AppController {
             
             foreach( $rows as $row ) {
 	            $name = $row->name;
-	            if( $row->color != '' ) {
+	            if( $row->color != '' && isset( $request['rowformat'] ) && $request['rowformat'] == 'datatable' ) {
 		            $name = ' <span class="contact-type-color" style="background-color:' . $row->color . '"></span>&nbsp;' . $name;
 	            }
 	            if( isset( $request['rowformat'] ) && $request['rowformat'] == 'datatable' ) {
@@ -104,6 +104,7 @@ class ContactTypesController extends AppController {
 	                    'id' => $row->id,
 	                    'name' => $name,
 	                    'level' => $row->ordering,
+	                    'color' => $row->color,
 						'is_default' => $row->is_default,
 						'description' => $row->description,
 		            ];

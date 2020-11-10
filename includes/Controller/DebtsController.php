@@ -415,7 +415,7 @@ class DebtsController extends AppController {
         $_data = $this->set_data( $id );        
         $data = [];
         
-        $allow = [ 'id', 'installments', 'due_date', 'note', 'ref_number' ];
+        $allow = [ 'id', 'contact_id', 'installments', 'trx_date', 'due_date', 'note', 'ref_number' ];
         foreach( $allow as $fld ) {
 	        $data[ $fld ] = $_data[ $fld ];
         }

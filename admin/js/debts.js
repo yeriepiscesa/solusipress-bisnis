@@ -207,8 +207,9 @@ function SolusiPress_DebtPayment_Item( id, data ) {
         $( '#solusipress-form-payment' ).jqmodal();
         $( '#solusipress-form-payment' ).find( '.frm-form-fields' ).loading( { message: 'Mengambil data...' } );   
         $( '.loading-overlay' ).css( 'z-index', 100000000 );
-        
-        $( 'body' ).on( 'focus', '.datepicker', function(){
+                
+        $( 'body' ).on( 'focus', '.datepicker', function(){	    
+	        
 	        if( $(this).hasClass('payment-item') ) {
 		        var bef = $(this).val();
 	        	$(this).datepicker();	        	
@@ -217,16 +218,24 @@ function SolusiPress_DebtPayment_Item( id, data ) {
 					$(this).val( bef );
 				}
 	        }
-	    } );
+	        
+	    } );	    	    
 	    
 		if( form_payment_calls == 0 ) {	    
-	        $( '#solusipress-form-payment' ).find( '.datepicker' ).live( 'click', function(){
-	            $(".ui-datepicker").css("z-index", "999999");  
-	        } );
-	        $( '#solusipress-form-payment' ).find( '#solusipress-payment-save' ).live( 'click', function(event){
+			
+			$( 'body' ).on( 'focus', '.datepicker', function(){
+		        var _x = window.setInterval(function(){
+					$(".ui-datepicker").css("z-index", "999999");
+					window.clearInterval( _x );
+				}, 100);
+				
+			});			 	        
+			
+	        $( '#solusipress-form-payment' ).find( '#solusipress-payment-save' ).click( function(event){
 		        do_save_payment(event);
 	        } );
 	    }
+	    
 	    form_payment_calls++;
         
         $.ajax( {
